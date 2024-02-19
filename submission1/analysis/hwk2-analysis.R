@@ -103,3 +103,5 @@ m.nn.ps <- Matching::Match(Y=lp.vars$price,
 
 summary(final.hcris.data$price)
 plot(density(hcris.data$price, na.rm=TRUE))
+
+save.image("submission1/hw2_workspace.Rdata")
