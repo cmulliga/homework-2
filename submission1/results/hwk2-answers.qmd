@@ -11,6 +11,10 @@ format:
       - \floatplacement{table}{H}
 ---
 
+This is my first submission of homework 2.
+
+[Link to Github](https://github.com/cmulliga/homework-2)
+
 ```{r}
 #| include: false
 
