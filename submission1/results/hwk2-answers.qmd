@@ -31,7 +31,7 @@ pacman::p_load(tidyverse, ggplot2, dplyr, lubridate, readr, readxl, hrbrthemes, 
 #| include: false
 #| eval: true
  
-load("hwk2_workspace.Rdata")
+load("/Users/ctmul/Emory Files/ECON 470-1/homework-2/hwk2_workspace.Rdata")
 ```
 
 
