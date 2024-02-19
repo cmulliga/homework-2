@@ -85,7 +85,7 @@ fig.prices
 \vspace{.2in}
 \noindent 5. Calculate the average price among penalized versus non-penalized hospitals.<br>
 
-The average price after calculating between the two groups is `r summarise(mean.price = mean(price))` where True is penalized hospitals and False is non penalized hospitals.
+The average price after calculating between the two groups is 9560 FALSE 9896 TRUE where True is penalized hospitals and False is non penalized hospitals.
 
 \newpage
 
