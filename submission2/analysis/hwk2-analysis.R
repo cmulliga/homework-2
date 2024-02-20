@@ -1,47 +1,23 @@
 # Preliminaries -----------------------------------------------------------
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load(tidyverse, ggplot2, dplyr, lubridate, scales)
+pacman::p_load(tidyverse, ggplot2, dplyr, lubridate)
 
 #Call/Load Datasets
-final.hcris.v1996 <- readRDS("data/output/HCRIS_Data_v1996.rds")
-final.hcris.v2010 <- readRDS("data/output/HCRIS_Data_v2010.rds")
+hcris.data.v1996 <- readRDS("data/output/HCRIS_Data_v1996.rds")
+hcris.data.v2010 <- readRDS("data/output/HCRIS_Data_v2010.rds")
 full.hcris.data <- readRDS("data/output/HCRIS_Data.rds")
 
-
-final.hcris.v1996 = final.hcris.v1996 %>%
-  mutate(hvbp_payment=NA, hrrp_payment=NA)
-
-#Combine Datasets
-final.hcris=rbind(final.hcris.v1996,final.hcris.v2010) %>%
-  mutate(fy_end=mdy(fy_end),fy_start=mdy(fy_start),
-         date_processed=mdy(date_processed),date_created=mdy(date_created),
-         tot_discounts=abs(tot_discounts), hrrp_payment=abs(hrrp_payment)) %>%
-  mutate(fyear=year(fy_end)) %>%
-  arrange(provider_number,fyear) %>%
-  select(-year)
-
-final.hcris %>% group_by(fyear) %>% count()
-
-#Create Total Reports
-final.hcris =
-  final.hcris %>% 
-  add_count(provider_number, fyear, name="total_reports")
-
-#Identify Hospitals with Multiple Reports per Fiscal Year
-duplicate.hcris = 
-  final.hcris %>%
-  filter(total_reports>1) %>%
-  mutate(time_diff=fy_end-fy_start)
-
-#Create Graph
-fig.hospital.reports <- duplicate.hcris %>% 
-    ggplot(aes(x=as.factor(fyear),y=provider_number)) + 
+#Objects
+fig.hospital.reports <- hcris.data.v2010 %>% 
+    group_by(provider_number, year) %>%
+    select(provider_number, year, report) %>%
+    ggplot(aes(x=as.factor(year),y=report)) + 
   labs(
     x="Year",
     y="Reports",
     title="Count of Hospitals Filing more than one Report per Year"
-  ) +
-  theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust=1))
+  ) + scale_y_continuous(labels=comma) +
+  theme_bw()
 
 plot(fig.hospital.reports)
 
@@ -96,14 +72,6 @@ mutate(quartile = ntile(beds, 4))
 #Table for Beds
 table(hcris.beds$price,hcris.beds$beds)
 
-
-#Object for Matching
-lp.vars <- final.hcris %>% 
-  select(beds, mcaid_discharges, penalty, ip_charges, 
-         mcare_discharges, tot_mcare_payment, price) %>%
-  filter(complete.cases(.))
-lp.covs <- lp.vars %>% select(-c("penalty","price"))
-
 #Inverse Matching
 m.nn.var <- Matching::Match(Y=lp.vars$price,
                             Tr=lp.vars$penalty,
@@ -132,7 +100,6 @@ m.nn.ps <- Matching::Match(Y=lp.vars$price,
                            X=ps,
                            M=1,
                            estimand="ATE")
-
 
 summary(final.hcris.data$price)
 plot(density(hcris.data$price, na.rm=TRUE))
