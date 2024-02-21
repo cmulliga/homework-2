@@ -52,7 +52,7 @@ My answers to the homework questions are below. Analysis is done in a separate R
 \newpage
 \noindent 2. After removing/combining multiple reports, how many unique hospital IDs (Medicare provider numbers) exist in the data? <br>
 
-Looking in the data, we are able to see that there are `r unique.count <-n_distinct(full.hcris.data$provider_number)` rows, so there are `r unique.count <-n_distinct(full.hcris.data$provider_number)` total plan types. 
+Looking in the data, we are able to see that there are 9323 hospital IDs.
 
 
 \newpage
